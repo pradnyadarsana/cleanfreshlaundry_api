@@ -9,9 +9,11 @@ Class User extends REST_Controller{
         $this->load->model('UserModel');
         $this->load->library('form_validation');
     }
+
     public function index_get(){
         return $this->returnData($this->db->get('users')->result(), false);
     }
+
     public function index_post($id = null){
         $validation = $this->form_validation;
         $rule = $this->UserModel->rules();
@@ -52,6 +54,7 @@ Class User extends REST_Controller{
         }
         return $this->returnData($response['msg'], $response['error']);
     }
+
     public function index_delete($id = null){
         if($id == null){
 			return $this->returnData('Parameter Id Tidak Ditemukan', true);
@@ -59,12 +62,14 @@ Class User extends REST_Controller{
         $response = $this->UserModel->destroy($id);
         return $this->returnData($response['msg'], $response['error']);
     }
+
     public function returnData($msg,$error){
         $response['error']=$error;
         $response['message']=$msg;
         return $this->response($response);
     }
 }
+
 Class UserData{
     public $name;
     public $password;

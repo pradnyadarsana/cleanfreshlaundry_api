@@ -1,20 +1,33 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class UserModel extends CI_Model
+class BranchModel extends CI_Model
 {
-    private $table = 'users';
+    private $table = 'branches';
 
     public $id;
     public $name;
-    public $email;
-    public $password;
+    public $address;
+    public $phoneNumber;
+    public $created_at;
+
     public $rule = [ 
         [
             'field' => 'name',
             'label' => 'name',
+            'rules' => 'required|alpha'
+        ],
+        [
+            'field' => 'address',
+            'label' => 'address',
             'rules' => 'required'
         ],
+        [
+            'field' => 'name',
+            'label' => 'name',
+            'rules' => 'required|numeric|is_unique[branches.phoneNumber]'
+        ],
+        
     ];
 
     public function Rules() { return $this->rule; }
@@ -25,8 +38,9 @@ class UserModel extends CI_Model
 
     public function store($request) { 
         $this->name = $request->name; 
-        $this->email = $request->email; 
-        $this->password = password_hash($request->password, PASSWORD_BCRYPT); 
+        $this->address = $request->address; 
+        $this->phoneNumber = $request->phoneNumber; 
+        $this->created_at = date('Y-m-d H:i:s');
         if($this->db->insert($this->table, $this)){
             return ['msg'=>'Berhasil','error'=>false];
         }
@@ -34,7 +48,7 @@ class UserModel extends CI_Model
     }
 
     public function update($request,$id) { 
-        $updateData = ['email' => $request->email, 'name' =>$request->name];
+        $updateData = ['name' => $request->name, 'address' =>$request->address, 'phoneNumber' =>$request->phoneNumber];
         if($this->db->where('id',$id)->update($this->table, $updateData)){
             return ['msg'=>'Berhasil','error'=>false];
         }
