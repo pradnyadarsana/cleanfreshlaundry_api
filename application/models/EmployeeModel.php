@@ -1,9 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class UserModel extends CI_Model
+class EmployeeModel extends CI_Model
 {
-    private $table = 'data_user';
+    private $table = 'data_employee';
 
     public $id;
     public $name;
@@ -12,8 +12,6 @@ class UserModel extends CI_Model
     public $username;
     public $password;
     public $gender;
-    public $activation_status;
-    public $verif_code;
     public $api_token;
 
     public $rule = [ 
@@ -60,10 +58,8 @@ class UserModel extends CI_Model
         $this->phone = $request->phone; 
         $this->email = $request->email;
         $this->username = $request->username;
-        $this->password = password_hash($request->password, PASSWORD_BCRYPT);
+        $this->password = $request->password;
         $this->gender = $request->gender;
-        $this->activation_status = 0;
-        $this->verif_code = md5(rand(1000,9999));
         $this->api_token = md5(rand(1000,9999));
          
         if($this->db->insert($this->table, $this)){
@@ -78,7 +74,7 @@ class UserModel extends CI_Model
             'phone' => $request->phone,
             'email' => $request->email, 
             'username' => $request->username, 
-            'password' => password_hash($request->password, PASSWORD_BCRYPT), 
+            'password' => $request->password, 
             'gender' => $request->gender
         ];
         if($this->db->where('id',$id)->update($this->table, $updateData)){

@@ -1,46 +1,41 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class BranchModel extends CI_Model
+class ReviewModel extends CI_Model
 {
-    private $table = 'branches';
+    private $table = 'data_review';
 
     public $id;
-    public $name;
-    public $address;
-    public $phoneNumber;
-    public $created_at;
+    public $username;
+    public $rate;
+    public $category;
+    public $description;
 
     public $rule = [ 
         [
-            'field' => 'name',
-            'label' => 'name',
-            'rules' => 'required|alpha'
+            'field' => 'rate',
+            'label' => 'rate',
+            'rules' => 'required|integer'
         ],
         [
-            'field' => 'address',
-            'label' => 'address',
+            'field' => 'category',
+            'label' => 'category',
             'rules' => 'required'
         ],
-        [
-            'field' => 'name',
-            'label' => 'name',
-            'rules' => 'required|numeric|is_unique[branches.phoneNumber]'
-        ],
-        
     ];
 
     public function Rules() { return $this->rule; }
    
     public function getAll() { return 
-        $this->db->get('data_mahasiswa')->result(); 
+        $this->db->get('data_review')->result(); 
     } 
 
     public function store($request) { 
-        $this->name = $request->name; 
-        $this->address = $request->address; 
-        $this->phoneNumber = $request->phoneNumber; 
-        $this->created_at = date('Y-m-d H:i:s');
+        $this->username = $request->username; 
+        $this->rate = $request->rate; 
+        $this->category = $request->category;
+        $this->description = $request->description;
+
         if($this->db->insert($this->table, $this)){
             return ['msg'=>'Berhasil','error'=>false];
         }
@@ -48,7 +43,11 @@ class BranchModel extends CI_Model
     }
 
     public function update($request,$id) { 
-        $updateData = ['name' => $request->name, 'address' =>$request->address, 'phoneNumber' =>$request->phoneNumber];
+        $updateData = [
+            'rate' =>$request->rate, 
+            'category' =>$request->category, 
+            'description' =>$request->description
+        ];
         if($this->db->where('id',$id)->update($this->table, $updateData)){
             return ['msg'=>'Berhasil','error'=>false];
         }

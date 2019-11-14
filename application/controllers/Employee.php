@@ -1,22 +1,22 @@
 <?php
 use Restserver \Libraries\REST_Controller ;
-Class User extends REST_Controller{
+Class Employee extends REST_Controller{
     public function __construct(){
         header('Access-Control-Allow-Origin: *');
         header("Access-Control-Allow-Methods: GET, OPTIONS, POST, DELETE");
         header("Access-Control-Allow-Headers: Content-Type, Content-Length, Accept-Encoding");
         parent::__construct();
-        $this->load->model('UserModel');
+        $this->load->model('EmployeeModel');
         $this->load->library('form_validation');
     }
 
     public function index_get(){
-        return $this->returnData($this->db->get('data_user')->result(), false);
+        return $this->returnData($this->db->get('data_employee')->result(), false);
     }
 
     public function index_post($id = null){
         $validation = $this->form_validation;
-        $rule = $this->UserModel->rules();
+        $rule = $this->EmployeeModel->rules();
         if($id == null){
             array_push($rule,[
                     'field' => 'name',
@@ -26,17 +26,17 @@ Class User extends REST_Controller{
                 [
                     'field' => 'phone',
                     'label' => 'phone',
-                    'rules' => 'required'
+                    'rules' => 'required|numeric'
                 ],
                 [
                     'field' => 'email',
                     'label' => 'email',
-                    'rules' => 'required'
+                    'rules' => 'required|valid_email|is_unique[data_employee.email]'
                 ],
                 [
                     'field' => 'username',
                     'label' => 'username',
-                    'rules' => 'required'
+                    'rules' => 'required|alpha_numeric|is_unique[data_employee.username]'
                 ],
                 [
                     'field' => 'password',
@@ -60,17 +60,17 @@ Class User extends REST_Controller{
                 [
                     'field' => 'phone',
                     'label' => 'phone',
-                    'rules' => 'required'
+                    'rules' => 'required|numeric'
                 ],
                 [
                     'field' => 'email',
                     'label' => 'email',
-                    'rules' => 'required'
+                    'rules' => 'required|valid_email'
                 ],
                 [
                     'field' => 'username',
                     'label' => 'username',
-                    'rules' => 'required'
+                    'rules' => 'required|alpha_numeric'
                 ],
                 [
                     'field' => 'password',
@@ -88,17 +88,17 @@ Class User extends REST_Controller{
 		if (!$validation->run()) {
 			return $this->returnData($this->form_validation->error_array(), true);
         }
-        $user = new UserData();
-        $user->name = $this->post('name');
-        $user->phone = $this->post('phone');
-        $user->email = $this->post('email');
-        $user->username = $this->post('username');
-        $user->password = $this->post('password');
-        $user->gender = $this->post('gender');
+        $employee = new EmployeeData();
+        $employee->name = $this->post('name');
+        $employee->phone = $this->post('phone');
+        $employee->email = $this->post('email');
+        $employee->username = $this->post('username');
+        $employee->password = $this->post('password');
+        $employee->gender = $this->post('gender');
         if($id == null){
-            $response = $this->UserModel->store($user);
+            $response = $this->EmployeeModel->store($employee);
         }else{
-            $response = $this->UserModel->update($user,$id);
+            $response = $this->EmployeeModel->update($employee,$id);
         }
         return $this->returnData($response['msg'], $response['error']);
     }
@@ -107,7 +107,7 @@ Class User extends REST_Controller{
         if($id == null){
 			return $this->returnData('Parameter Id Tidak Ditemukan', true);
         }
-        $response = $this->UserModel->destroy($id);
+        $response = $this->EmployeeModel->destroy($id);
         return $this->returnData($response['msg'], $response['error']);
     }
 
@@ -118,7 +118,7 @@ Class User extends REST_Controller{
     }
 }
 
-Class UserData{
+Class EmployeeData{
     public $name;
     public $phone;
     public $email;
