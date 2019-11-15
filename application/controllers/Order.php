@@ -14,6 +14,10 @@ Class Order extends REST_Controller{
         return $this->returnData($this->db->get('data_order')->result(), false);
     }
 
+    public function userOrder_get($username){
+        return $this->returnData($this->db->get('data_order', ["username" => $username])->result(), false);
+    }
+
     public function index_post($id = null){
         $validation = $this->form_validation;
         $rule = $this->OrderModel->rules();
