@@ -15,7 +15,7 @@ Class Order extends REST_Controller{
     }
 
     public function userOrder_get($username){
-        return $this->returnData($this->db->get('data_order', ["username" => $username])->result(), false);
+        return $this->returnData($this->db->get_where('data_order', ["username" => $username])->result(), false);
     }
 
     public function index_post($id = null){
