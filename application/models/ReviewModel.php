@@ -10,6 +10,7 @@ class ReviewModel extends CI_Model
     public $rate;
     public $category;
     public $description;
+    public $created_at;
 
     public $rule = [ 
         [
