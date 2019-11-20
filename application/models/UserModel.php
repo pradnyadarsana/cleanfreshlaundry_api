@@ -1,5 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+include('EmailVerification.php');
 
 class UserModel extends CI_Model
 {
@@ -63,11 +64,33 @@ class UserModel extends CI_Model
         $this->password = password_hash($request->password, PASSWORD_BCRYPT);
         $this->gender = $request->gender;
         $this->activation_status = 0;
-        $this->verif_code = md5(rand(1000,9999));
-        $this->api_token = md5(rand(1000,9999));
-         
+
+        //generate simple random code
+        $set = '123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $code = substr(str_shuffle($set), 0, 20);
+        $this->verif_code = $code;//md5(rand(1000,9999));
+        
         if($this->db->insert($this->table, $this)){
-            return ['msg'=>'Berhasil','error'=>false];
+            $result = $this->db->get_where('data_user', ["username" => $this->username])->row();
+            $id = $result->id;
+            //$encrypted_id = md5($id);
+            $mailMan = new EmailVerification();
+            $result = $mailMan->send_mail($this, $id);
+            return $result;
+        }
+        return ['msg'=>'Gagal terdaftar','error'=>true];
+    }
+
+    public function userUpdate($id, $key) {
+        $user = $this->db->get_where('data_user', ["id" => $id])->row();
+        if($user->verif_code == $key){
+            $updateData = [ 
+                'activation_status' => '1'
+            ];
+            
+            if($this->db->where('id',$id)->update($this->table, $updateData)){
+                return ['msg'=>'Berhasil','error'=>false];
+            }
         }
         return ['msg'=>'Gagal','error'=>true];
     }

@@ -14,6 +14,10 @@ Class User extends REST_Controller{
         return $this->returnData($this->db->get('data_user')->result(), false);
     }
 
+    public function oneUser_get($username){
+        return $this->returnData($this->db->get_where('data_user', ["username" => $username])->result(), false);
+    }
+
     public function index_post($id = null){
         $validation = $this->form_validation;
         $rule = $this->UserModel->rules();
@@ -26,17 +30,17 @@ Class User extends REST_Controller{
                 [
                     'field' => 'phone',
                     'label' => 'phone',
-                    'rules' => 'required'
+                    'rules' => 'required|numeric'
                 ],
                 [
                     'field' => 'email',
                     'label' => 'email',
-                    'rules' => 'required'
+                    'rules' => 'required|valid_email|is_unique[data_user.email]'
                 ],
                 [
                     'field' => 'username',
                     'label' => 'username',
-                    'rules' => 'required'
+                    'rules' => 'required|alpha_numeric|is_unique[data_user.username]'
                 ],
                 [
                     'field' => 'password',
@@ -103,6 +107,12 @@ Class User extends REST_Controller{
         return $this->returnData($response['msg'], $response['error']);
     }
 
+    public function userUpdate_post($id, $key){
+        $response = $this->UserModel->userUpdate($id, $key);
+        //return $this->returnData($response['msg'], $response['error']);
+        return $this->load->view('verification_success');
+    }
+
     public function index_delete($id = null){
         if($id == null){
 			return $this->returnData('Parameter Id Tidak Ditemukan', true);
@@ -125,4 +135,5 @@ Class UserData{
     public $username;
     public $password;
     public $gender;
+    public $verif_code;
 }
