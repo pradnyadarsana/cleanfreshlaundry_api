@@ -152,7 +152,6 @@ class EmailVerification extends CI_Model
         }
         else {
             return ['msg'=>'Gagal mengirim email verifikasi','error'=>true];
-            //echo $this->email->print_debugger();
         }
     }
 }

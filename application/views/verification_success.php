@@ -6,6 +6,6 @@
   <?php 
     echo "Your Account is active now, Please login to:";
   ?>
-        <a href="http:cleanfresh.smithdev.xyz">Clean Fresh Laundry</a>
+        <a href="http://cleanfresh.smithdev.xyz">Clean Fresh Laundry</a>
     </body>
 </html>
