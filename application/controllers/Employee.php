@@ -78,11 +78,6 @@ Class Employee extends REST_Controller{
                     'rules' => 'required|alpha_numeric'
                 ],
                 [
-                    'field' => 'password',
-                    'label' => 'password',
-                    'rules' => 'required'
-                ],
-                [
                     'field' => 'gender',
                     'label' => 'gender',
                     'rules' => 'required'
@@ -105,6 +100,13 @@ Class Employee extends REST_Controller{
         }else{
             $response = $this->EmployeeModel->update($employee,$id);
         }
+        return $this->returnData($response['msg'], $response['error']);
+    }
+
+    public function updatePassword_post($id){
+        $employee = new EmployeeData();
+        $employee->password = $this->post('password');
+        $response = $this->EmployeeModel->updatePassword($employee, $id);
         return $this->returnData($response['msg'], $response['error']);
     }
 

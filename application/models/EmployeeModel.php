@@ -36,11 +36,6 @@ class EmployeeModel extends CI_Model
             'rules' => 'required'
         ],
         [
-            'field' => 'password',
-            'label' => 'password',
-            'rules' => 'required'
-        ],
-        [
             'field' => 'gender',
             'label' => 'gender',
             'rules' => 'required'
@@ -73,8 +68,17 @@ class EmployeeModel extends CI_Model
             'phone' => $request->phone,
             'email' => $request->email, 
             'username' => $request->username, 
-            'password' => $request->password, 
             'gender' => $request->gender
+        ];
+        if($this->db->where('id',$id)->update($this->table, $updateData)){
+            return ['msg'=>'Berhasil','error'=>false];
+        }
+        return ['msg'=>'Gagal','error'=>true];
+    }
+
+    public function updatePassword($request,$id) { 
+        $updateData = [  
+            'password' => $request->password
         ];
         if($this->db->where('id',$id)->update($this->table, $updateData)){
             return ['msg'=>'Berhasil','error'=>false];

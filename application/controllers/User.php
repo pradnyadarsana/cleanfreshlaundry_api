@@ -87,11 +87,6 @@ Class User extends REST_Controller{
                     'rules' => 'required'
                 ],
                 [
-                    'field' => 'password',
-                    'label' => 'password',
-                    'rules' => 'required'
-                ],
-                [
                     'field' => 'gender',
                     'label' => 'gender',
                     'rules' => 'required'
@@ -114,6 +109,13 @@ Class User extends REST_Controller{
         }else{
             $response = $this->UserModel->update($user,$id);
         }
+        return $this->returnData($response['msg'], $response['error']);
+    }
+
+    public function updatePassword_post($id){
+        $user = new UserData();
+        $user->password = $this->post('password');
+        $response = $this->UserModel->updatePassword($user, $id);
         return $this->returnData($response['msg'], $response['error']);
     }
 

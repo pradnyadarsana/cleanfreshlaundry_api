@@ -39,11 +39,6 @@ class UserModel extends CI_Model
             'rules' => 'required'
         ],
         [
-            'field' => 'password',
-            'label' => 'password',
-            'rules' => 'required'
-        ],
-        [
             'field' => 'gender',
             'label' => 'gender',
             'rules' => 'required'
@@ -87,7 +82,6 @@ class UserModel extends CI_Model
             $updateData = [ 
                 'activation_status' => '1'
             ];
-            
             if($this->db->where('id',$id)->update($this->table, $updateData)){
                 return ['msg'=>'Berhasil','error'=>false];
             }
@@ -100,9 +94,18 @@ class UserModel extends CI_Model
             'name' => $request->name, 
             'phone' => $request->phone,
             'email' => $request->email, 
-            'username' => $request->username, 
-            'password' => password_hash($request->password, PASSWORD_BCRYPT), 
+            'username' => $request->username,  
             'gender' => $request->gender
+        ];
+        if($this->db->where('id',$id)->update($this->table, $updateData)){
+            return ['msg'=>'Berhasil','error'=>false];
+        }
+        return ['msg'=>'Gagal','error'=>true];
+    }
+
+    public function updatePassword($request,$id) { 
+        $updateData = [  
+            'password' => password_hash($request->password, PASSWORD_BCRYPT)
         ];
         if($this->db->where('id',$id)->update($this->table, $updateData)){
             return ['msg'=>'Berhasil','error'=>false];
