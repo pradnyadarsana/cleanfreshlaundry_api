@@ -139,7 +139,10 @@ class UserModel extends CI_Model
     public function verify($request){
         $user = $this->db->select('*')->where(array('username' => $request->username))->get($this->table)->row_array();
         if(!empty($user) && password_verify($request->password, $user['password'])){
-            return $user;
+            if($user['activation_status'] == 1){
+                return $user;
+            }
+            return false;
         }else{
             return false;
         }
