@@ -54,7 +54,7 @@ class UserModel extends CI_Model
    
     public function getAll() { return 
         $this->db->get('data_user')->result(); 
-    } 
+    }
 
     public function store($request) { 
         $this->name = $request->name;
@@ -105,6 +105,23 @@ class UserModel extends CI_Model
             'gender' => $request->gender
         ];
         if($this->db->where('id',$id)->update($this->table, $updateData)){
+            return ['msg'=>'Berhasil','error'=>false];
+        }
+        return ['msg'=>'Gagal','error'=>true];
+    }
+
+    public function updateToken($token, $username){
+        $updateData = [
+            'api_token' => $token
+        ];
+        $this->db->where('username',$username)->update($this->table, $updateData);
+    }
+
+    public function deleteToken($token){
+        $updateData = [
+            'api_token' => NULL
+        ];
+        if($this->db->where('api_token',$token)->update($this->table, $updateData)){
             return ['msg'=>'Berhasil','error'=>false];
         }
         return ['msg'=>'Gagal','error'=>true];

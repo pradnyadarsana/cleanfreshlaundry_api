@@ -43,10 +43,17 @@ Class Auth extends REST_Controller{
         if($result = $this->UserModel->verify($user)){
             
             $token = AUTHORIZATION::generateToken(['ID' => $result['id'],'username' => $result['username']]);
+            //set new api token to database
+            $this->UserModel->updateToken($token,$user->username);
+            //return user data
+            $data = [
+                'token' => $token,
+                'user' => $result
+            ];
             // Set HTTP status code
             $status = parent::HTTP_OK;
             // Prepare the response
-            $response = ['status' => $status, 'token' => $token];
+            $response = ['status' => $status, 'data' => $data];
             // REST_Controller provide this method to send responses
             return $this->response($response, $status);
     
@@ -78,6 +85,12 @@ Class Auth extends REST_Controller{
         $response['message']=$msg;
         return $this->response($response);
     }
+
+    public function deleteToken_post($token){
+        $response = $this->UserModel->deleteToken($token);
+        return $this->returnData($response['msg'], $response['error']);
+    }
+
 } 
 
 Class UserData{     

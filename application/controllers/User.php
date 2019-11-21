@@ -24,6 +24,10 @@ Class User extends REST_Controller{
         return $this->returnData($this->db->get_where('data_user', ["username" => $username])->result(), false);
     }
 
+    public function userByToken_get($token){
+        return $this->returnData($this->db->get_where('data_user', ["api_token" => $token])->result(), false);
+    }
+
     public function index_post($id = null){
         $validation = $this->form_validation;
         $rule = $this->UserModel->rules();
