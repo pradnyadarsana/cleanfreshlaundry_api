@@ -4,14 +4,19 @@ Class Employee extends REST_Controller{
     public function __construct(){
         header('Access-Control-Allow-Origin: *');
         header("Access-Control-Allow-Methods: GET, OPTIONS, POST, DELETE");
-        header("Access-Control-Allow-Headers: Content-Type, Content-Length, Accept-Encoding");
+        header("Access-Control-Allow-Headers: Authorization, Content-Type, Content-Length, Accept-Encoding");
         parent::__construct();
         $this->load->model('EmployeeModel');
         $this->load->library('form_validation');
+        $this->load->helper(['jwt','authorization']);
     }
 
     public function index_get(){
         return $this->returnData($this->db->get('data_employee')->result(), false);
+    }
+
+    public function oneEmployee_get($username){
+        return $this->returnData($this->db->get_where('data_employee', ["username" => $username])->result(), false);
     }
 
     public function index_post($id = null){
@@ -115,6 +120,44 @@ Class Employee extends REST_Controller{
         $response['error']=$error;
         $response['message']=$msg;
         return $this->response($response);
+    }
+
+    private function verify_request()
+    {
+        // Get all the headers
+        $headers = $this->input->request_headers();
+        // Extract the token
+        if(isset($headers['Authorization'])){
+            $header = $headers['Authorization'];
+        }else
+        {
+            $status = parent::HTTP_UNAUTHORIZED;
+            $response = ['status' => $status, 'msg' => 'Unauthorized Access!'];
+            return $response;
+        }
+        
+        //$token = explode(".", $header)[1];
+        // Use try-catch
+        // JWT library throws exception if the token is not valid
+        try {
+            // Validate the token
+            // Successfull validation will return the decoded user data else returns false
+            $data = AUTHORIZATION::validateToken($header);
+            if ($data === false) {
+                $status = parent::HTTP_UNAUTHORIZED;
+                $response = ['status' => $status, 'msg' => 'Unauthorized Access!'];
+            } else {
+                $response = ['status' => 200, 'msg' => $data];
+            }
+            return $response;
+        } catch (Exception $e) {
+            // Token is invalid
+            // Send the unathorized access message
+            $status = parent::HTTP_UNAUTHORIZED;
+            $response = ['status' => $status, 'msg' => 'Unauthorized Access! '];
+            //$this->response($response, $status);
+            return $response;
+        }
     }
 }
 

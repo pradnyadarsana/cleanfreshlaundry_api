@@ -60,7 +60,6 @@ class EmployeeModel extends CI_Model
         $this->username = $request->username;
         $this->password = $request->password;
         $this->gender = $request->gender;
-        $this->api_token = md5(rand(1000,9999));
          
         if($this->db->insert($this->table, $this)){
             return ['msg'=>'Berhasil','error'=>false];
@@ -82,6 +81,23 @@ class EmployeeModel extends CI_Model
         }
         return ['msg'=>'Gagal','error'=>true];
     }
+
+    public function updateToken($token, $username){
+        $updateData = [
+            'api_token' => $token
+        ];
+        $this->db->where('username',$username)->update($this->table, $updateData);
+    }
+
+    public function deleteToken($token){
+        $updateData = [
+            'api_token' => NULL
+        ];
+        if($this->db->where('api_token',$token)->update($this->table, $updateData)){
+            return ['msg'=>'Berhasil','error'=>false];
+        }
+        return ['msg'=>'Gagal','error'=>true];
+    }
     
     public function destroy($id){
         if (empty($this->db->select('*')->where(array('id' => $id))->get($this->table)->row())) return ['msg'=>'Id tidak ditemukan','error'=>true];
@@ -90,6 +106,15 @@ class EmployeeModel extends CI_Model
             return ['msg'=>'Berhasil','error'=>false];
         }
         return ['msg'=>'Gagal','error'=>true];
+    }
+
+    public function verify($request){
+        $user = $this->db->select('*')->where(array('username' => $request->username))->get($this->table)->row_array();
+        if(!empty($user) && $request->password==$user['password']){
+            return $user;
+        }else{
+            return false;
+        }
     }
 }
 ?>
