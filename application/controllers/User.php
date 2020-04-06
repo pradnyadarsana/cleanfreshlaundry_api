@@ -1,6 +1,6 @@
 <?php
-use Restserver \Libraries\REST_Controller ;
-Class User extends REST_Controller{
+use chriskacerguis\RestServer\RestController; 
+Class User extends RestController{
     public function __construct(){
         header('Access-Control-Allow-Origin: *');
         header("Access-Control-Allow-Methods: GET, OPTIONS, POST, DELETE");

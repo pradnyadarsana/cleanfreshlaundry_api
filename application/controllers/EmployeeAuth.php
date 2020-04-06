@@ -1,7 +1,7 @@
 <?php 
-use Restserver \Libraries\REST_Controller ; 
+use chriskacerguis\RestServer\RestController; 
 
-Class EmployeeAuth extends REST_Controller{ 
+Class EmployeeAuth extends RestController{ 
     
     public function __construct(){
         header('Access-Control-Allow-Origin: *');         

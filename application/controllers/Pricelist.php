@@ -1,6 +1,6 @@
 <?php
-use Restserver \Libraries\REST_Controller ;
-Class Pricelist extends REST_Controller{
+use chriskacerguis\RestServer\RestController; 
+Class Pricelist extends RestController{
     public function __construct(){
         header('Access-Control-Allow-Origin: *');
         header("Access-Control-Allow-Methods: GET, OPTIONS, POST, DELETE");
